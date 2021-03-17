@@ -15,6 +15,7 @@ app = Flask(__name__)
 line_bot_api = LineBotApi('FJGm2w50XY4NIb9bKTro/iq6T9dsjiHsawT3xzcwYqVdxhS9m/d3kEkrNXWrPB5Xq1miYvnJ3RN1/LXLcvF6Lro9+GbAMUa4lhp8Lr06ouTvH1NtFAX9DQC8e+t6AabKg0X5iE9ttaCyLBQ4sSlhmAdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('523f0657d22c322bba73ac17817f366c')
 
+
 @app.route("/")
 def test():
     return "OK"
