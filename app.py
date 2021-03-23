@@ -71,7 +71,24 @@ def check(carName):
     for carList in carLists:
         if carList.find('div', attrs={'class': 'show-entry-end'}) is None:       
             if carName == '全部':
-                al = carList
+                carList1 = carList.find_all('p')
+                carList2 = carList.find('div', attrs={'class': 'service-item__reserve-tel'})
+                content2 = carList2.text.replace('\n', '').replace(' ', '').replace('\u3000', ' ')
+                car = []
+                for content in carList1:
+                    content = content.text.replace('\n', '').replace(' ', '').replace('\u3000', ' ')
+                    if content != '':
+                        car.append(content)
+                car.append(content2)
+                sList = ''
+                for i in range(0,12,2):
+                    info = car[i]
+                    cont = car[i+1]
+                    sList = sList + info + ':' + cont + '\n'
+                sList = '\n' + str(cont_count) + '件目\n' + sList
+                cont_count += 1
+                bookList.append(sList)
+                
             else:
                 search = re.compile('^' + carName)
                 al = carList.find(text=search)
