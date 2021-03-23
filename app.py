@@ -69,8 +69,10 @@ def check(carName):
     carLists = soup.find('ul', attrs={'id': 'service-items-shop-type-start'})
     carLists = carLists.find_all('li', attrs={'class': 'service-item'})
     for carList in carLists:
-        if carList.find('div', attrs={'class': 'show-entry-end'}) is None:       
-            if carName == '全部':
+        if carList.find('div', attrs={'class': 'show-entry-end'}) is None:
+            search = re.compile('^' + carName)
+            al = carList.find(text=search)
+            if al is not None:
                 carList1 = carList.find_all('p')
                 carList2 = carList.find('div', attrs={'class': 'service-item__reserve-tel'})
                 content2 = carList2.text.replace('\n', '').replace(' ', '').replace('\u3000', ' ')
@@ -88,28 +90,6 @@ def check(carName):
                 sList = '\n' + str(cont_count) + '件目\n' + sList
                 cont_count += 1
                 bookList.append(sList)
-
-            else:
-                search = re.compile('^' + carName)
-                al = carList.find(text=search)
-                if al is not None:
-                    carList1 = carList.find_all('p')
-                    carList2 = carList.find('div', attrs={'class': 'service-item__reserve-tel'})
-                    content2 = carList2.text.replace('\n', '').replace(' ', '').replace('\u3000', ' ')
-                    car = []
-                    for content in carList1:
-                        content = content.text.replace('\n', '').replace(' ', '').replace('\u3000', ' ')
-                        if content != '':
-                            car.append(content)
-                    car.append(content2)
-                    sList = ''
-                    for i in range(0,12,2):
-                        info = car[i]
-                        cont = car[i+1]
-                        sList = sList + info + ':' + cont + '\n'
-                    sList = '\n' + str(cont_count) + '件目\n' + sList
-                    cont_count += 1
-                    bookList.append(sList)
     return bookList    
     
 if __name__ == "__main__":
