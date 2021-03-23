@@ -70,8 +70,11 @@ def check(carName):
     carLists = carLists.find_all('li', attrs={'class': 'service-item'})
     for carList in carLists:
         if carList.find('div', attrs={'class': 'show-entry-end'}) is None:       
-            search = re.compile('^' + carName)
-            al = carList.find(text=search)
+            if carName == '全部':
+                al = carList
+            else:
+                search = re.compile('^' + carName)
+                al = carList.find(text=search)
             if al is not None:
                 carList1 = carList.find_all('p')
                 carList2 = carList.find('div', attrs={'class': 'service-item__reserve-tel'})
