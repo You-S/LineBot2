@@ -45,20 +45,23 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     carName = event.message.text
-    result = '\n'.join(check(carName))
+    #result = '\n'.join(check(carName))
+    result = check(carName)
     if result == '':
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text='見つかりませんでした'))
     else:
+        messages = []
+        for row in result:
+            messages.append(TextSendMessage(text=row))
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text=result))
+            messages=messages)
 
 def check(carName):
     import requests
     from bs4 import BeautifulSoup
-    import re
 
     url = 'https://cp.toyota.jp/rentacar/?padid=ag270_fr_sptop_onewayma'
     res = requests.get(url)
@@ -69,10 +72,8 @@ def check(carName):
     carLists = soup.find('ul', attrs={'id': 'service-items-shop-type-start'})
     carLists = carLists.find_all('li', attrs={'class': 'service-item'})
     for carList in carLists:
-        if carList.find('div', attrs={'class': 'show-entry-end'}) is None:       
-            search = re.compile('^' + carName)
-            al = carList.find(text=search)
-            if al is not None:
+        if carList.find('div', attrs={'class': 'show-entry-end'}) is None:
+            if carName in carList.text:
                 carList1 = carList.find_all('p')
                 carList2 = carList.find('div', attrs={'class': 'service-item__reserve-tel'})
                 content2 = carList2.text.replace('\n', '').replace(' ', '').replace('\u3000', ' ')
@@ -86,11 +87,11 @@ def check(carName):
                 for i in range(0,12,2):
                     info = car[i]
                     cont = car[i+1]
-                    sList = sList + info + ':' + cont + '\n'
-                sList = '\n' + str(cont_count) + '件目\n' + sList
+                    sList = sList + '\n' + info + ':' + cont
+                sList = str(cont_count) + '件目' + sList
                 cont_count += 1
                 bookList.append(sList)
-    return bookList    
+    return bookList  
     
 if __name__ == "__main__":
     port = int(os.getenv("PORT"))

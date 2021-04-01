@@ -45,15 +45,19 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     carName = event.message.text
-    result = '\n'.join(check(carName))
+    #result = '\n'.join(check(carName))
+    result = check(carName)
     if result == '':
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text='見つかりませんでした'))
     else:
+        messages = []
+        for row in result:
+            messages.append(TextSendMessage(text=row))
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text=result))
+            messages=messages)
 
 def check(carName):
     import requests
@@ -83,11 +87,11 @@ def check(carName):
                 for i in range(0,12,2):
                     info = car[i]
                     cont = car[i+1]
-                    sList = sList + info + ':' + cont + '\n'
-                sList = '\n' + str(cont_count) + '件目\n' + sList
+                    sList = sList + '\n' + info + ':' + cont
+                sList = str(cont_count) + '件目' + sList
                 cont_count += 1
                 bookList.append(sList)
-    return bookList   
+    return bookList  
     
 if __name__ == "__main__":
     port = int(os.getenv("PORT"))
