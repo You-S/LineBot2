@@ -55,7 +55,7 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text=result))
         user_id = line_bot_api.get_profile()
-        line_bot_api.push_message(user_id, 'あ')
+        line_bot_api.push_message(user_id, TextSendMessage(text='あ'))
 
 def check(carName):
     import requests
