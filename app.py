@@ -58,7 +58,6 @@ def handle_message(event):
 def check(carName):
     import requests
     from bs4 import BeautifulSoup
-    import re
 
     url = 'https://cp.toyota.jp/rentacar/?padid=ag270_fr_sptop_onewayma'
     res = requests.get(url)
@@ -70,9 +69,7 @@ def check(carName):
     carLists = carLists.find_all('li', attrs={'class': 'service-item'})
     for carList in carLists:
         if carList.find('div', attrs={'class': 'show-entry-end'}) is None:
-            search = re.compile('^' + carName)
-            al = carList.find(text=search)
-            if al is not None:
+            if carName in carList.text:
                 carList1 = carList.find_all('p')
                 carList2 = carList.find('div', attrs={'class': 'service-item__reserve-tel'})
                 content2 = carList2.text.replace('\n', '').replace(' ', '').replace('\u3000', ' ')
@@ -90,7 +87,7 @@ def check(carName):
                 sList = '\n' + str(cont_count) + '件目\n' + sList
                 cont_count += 1
                 bookList.append(sList)
-    return bookList    
+    return bookList   
     
 if __name__ == "__main__":
     port = int(os.getenv("PORT"))
