@@ -45,7 +45,7 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     carName = event.message.text
-    result = '\n'.join(check(carName))
+    result = '\n\n'.join(check(carName))
     if result == '':
         line_bot_api.reply_message(
             event.reply_token,
