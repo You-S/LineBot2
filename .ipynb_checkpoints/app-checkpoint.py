@@ -45,17 +45,22 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     carName = event.message.text
-    result = '\n\n'.join(check(carName))
+    #result = '\n\n'.join(check(carName))
+    result = check(carName)
     if result == '':
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text='見つかりませんでした'))
     else:
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=result))
-        profile = line_bot_api.get_profile(event.source.user_id)
-        line_bot_api.push_message(profile.user_id, TextSendMessage(text='あ'))
+        if len(result) == 1:
+            result = ''.join(result)
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=result))
+        else:
+            profile = line_bot_api.get_profile(event.source.user_id)
+            for msg in result:
+                line_bot_api.push_message(profile.user_id, TextSendMessage(text=msg))
 
 def check(carName):
     import requests
