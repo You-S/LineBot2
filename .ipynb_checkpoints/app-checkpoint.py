@@ -56,8 +56,7 @@ def handle_message(event):
         for row in result:
             messages.append(TextSendMessage(text=row))
         line_bot_api.reply_message(
-            event.reply_token,
-            messages=messages)
+            event.reply_token,messages)
 
 def check(carName):
     import requests
